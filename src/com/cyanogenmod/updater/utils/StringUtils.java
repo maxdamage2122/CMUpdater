@@ -9,11 +9,11 @@
 
 package com.cyanogenmod.updater.utils;
 
+import android.annotation.SuppressLint;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class StringUtils {
-    private static final String TAG = "StringUtils";
 
     /**
      * Converts a String array to a String, joined by the Seperator
@@ -41,7 +41,8 @@ public class StringUtils {
      * @return true if newVersion is greater then oldVersion,
      * false on exceptions or newVersion=oldVersion and newVersion is lower then oldVersion
      */
-    public static boolean compareVersions(String newVersion, String oldVersion, Integer newDate, Integer oldDate) {
+    @SuppressLint("UseValueOf")
+	public static boolean compareVersions(String newVersion, String oldVersion, Integer newDate, Integer oldDate) {
         //Replace all - by . So a CyanogenMod-4.5.4-r2 will be a CyanogenMod.4.5.4.r2 
         newVersion = newVersion.replaceAll("-", "\\.");
         oldVersion = oldVersion.replaceAll("-", "\\.");

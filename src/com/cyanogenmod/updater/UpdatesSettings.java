@@ -11,7 +11,6 @@ package com.cyanogenmod.updater;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -77,7 +76,6 @@ import java.util.List;
 
 public class UpdatesSettings extends PreferenceActivity implements OnPreferenceChangeListener {
     private static String TAG = "UpdatesSettings";
-    private static final boolean DEBUG = false;
 
     private static String UPDATES_CATEGORY = "updates_category";
 
@@ -953,7 +951,8 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
         dialog.show();
     }
 
-    private String getStorageMountpoint() {
+    @SuppressLint("SdCardPath")
+	private String getStorageMountpoint() {
         StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
         StorageVolume[] volumes = sm.getVolumeList();
         String primaryStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
