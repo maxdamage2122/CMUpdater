@@ -806,16 +806,47 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
     	
     	return dateTime;
     }
-
-    protected void startUpdate(final UpdateInfo updateInfo) {
-        // Prevent the dialog from being triggered more than once
-        if (mStartUpdateVisible) {
-            return;
-        } else {
-            mStartUpdateVisible = true;
-        }
-
-        // Get the message body right
+    
+    private String getBackupOptions(final List<Integer> selectedOptions) {
+		String backupOptions = "";
+		
+		for(int index = 0; index < selectedOptions.size(); index++) {
+			switch (selectedOptions.get(index)) {
+			case 0:
+				backupOptions = backupOptions+"S";
+				break;
+			case 1:
+				backupOptions = backupOptions+"D";
+				break;
+			case 2:
+				backupOptions = backupOptions+"C";
+				break;
+			case 3:
+				backupOptions = backupOptions+"R";
+				break;
+			case 4:
+				backupOptions = backupOptions+"B";
+				break;
+			case 5:
+				backupOptions = backupOptions+"A";
+				break;
+			case 6:
+				backupOptions = backupOptions+"E";
+				break;
+			case 7:
+				backupOptions = backupOptions+"O";
+				break;
+			case 8:
+				backupOptions = backupOptions+"M";
+				break;				
+			}
+		}
+		
+    	return backupOptions;
+    }
+    
+    protected void confirmUpdate(final UpdateInfo updateInfo, final String backupOptions) {
+    	// Get the message body right
         String dialogBody = MessageFormat.format(
                 getResources().getString(R.string.apply_update_dialog_text),
                 updateInfo.getFileName());
@@ -844,7 +875,7 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
                         String cmd;
                         
                         os.write("echo 'set tw_use_external_storage 1' >/cache/recovery/openrecoveryscript\n".getBytes());
-                        cmd = "echo 'backup DSBO "+currentDateTime()+"-cm-"+mSystemRom+"' >> /cache/recovery/openrecoveryscript\n";
+                        cmd = "echo 'backup "+backupOptions+" "+currentDateTime()+"-cm-"+mSystemRom+"' >> /cache/recovery/openrecoveryscript\n";
                         os.write(cmd.getBytes());
                         cmd = "echo 'install "+getStorageMountpoint()
                                 + "/" + Constants.UPDATES_FOLDER + "/" + updateInfo.getFileName()
@@ -868,6 +899,53 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
                     mStartUpdateVisible = false;
                 }
             });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    protected void startUpdate(final UpdateInfo updateInfo) {
+        // Prevent the dialog from being triggered more than once
+        if (mStartUpdateVisible) {
+            return;
+        } else {
+            mStartUpdateVisible = true;
+        }
+        String[] options = {"System","Data","Cache","Recovery","Boot","Android Secure","SD-Ext","Use compression","Do not create MD5"};
+        final List<Integer> selectedOptions = new ArrayList<Integer>();  // Where we track the selected items
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Set the dialog title
+        builder.setTitle("Backup Options")
+        // Specify the list array, the items to be selected by default (null for none),
+        // and the listener through which to receive callbacks when items are selected
+               .setMultiChoiceItems(options, null,
+                          new DialogInterface.OnMultiChoiceClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which,
+                           boolean isChecked) {
+                       if (isChecked) {
+                           // If the user checked the item, add it to the selected items
+                    	   selectedOptions.add(which);
+                       } else if (selectedOptions.contains(which)) {
+                           // Else, if the item is already in the array, remove it 
+                           selectedOptions.remove(Integer.valueOf(which));
+                       }
+                   }
+               })
+        // Set the action buttons
+               .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int id) {
+                	   String backupOptions = getBackupOptions(selectedOptions);
+                       confirmUpdate(updateInfo, backupOptions);
+                   }
+               })
+               .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialog.dismiss();
+                       mStartUpdateVisible = false;
+                   }
+               });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
