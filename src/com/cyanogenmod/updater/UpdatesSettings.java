@@ -875,8 +875,11 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
                         String cmd;
                         
                         os.write("echo 'set tw_use_external_storage 1' >/cache/recovery/openrecoveryscript\n".getBytes());
-                        cmd = "echo 'backup "+backupOptions+" "+currentDateTime()+"-cm-"+mSystemRom+"' >> /cache/recovery/openrecoveryscript\n";
-                        os.write(cmd.getBytes());
+                        if (backupOptions.compareTo("") != 0 && backupOptions.compareTo("O") != 0 && backupOptions.compareTo("M") != 0
+                        		&& backupOptions.compareTo("OM") != 0 && backupOptions.compareTo("MO") != 0) {
+                        	cmd = "echo 'backup "+backupOptions+" "+currentDateTime()+"-cm-"+mSystemRom+"' >> /cache/recovery/openrecoveryscript\n";
+                        	os.write(cmd.getBytes());
+                        }
                         cmd = "echo 'install "+getStorageMountpoint()
                                 + "/" + Constants.UPDATES_FOLDER + "/" + updateInfo.getFileName()
                                 + "' >> /cache/recovery/openrecoveryscript\n";
