@@ -35,7 +35,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.storage.StorageManager;
-//import android.os.storage.StorageVolume;
+import android.os.storage.StorageVolume;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -951,36 +951,36 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
     }
 
     private String getStorageMountpoint() {
-//        StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-//        StorageVolume[] volumes = sm.getVolumeList();
-//        String primaryStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-//        boolean alternateIsInternal = getResources().getBoolean(R.bool.alternateIsInternal);
-//
-//        if (volumes.length <= 1) {
-//            // single storage, assume only /sdcard exists
-//            return "/sdcard";
-//        }
-//
-//        for (int i = 0; i < volumes.length; i++) {
-//            StorageVolume v = volumes[i];
-//            if (v.getPath().equals(primaryStoragePath)) {
-//                /* This is the primary storage, where we stored the update file
-//                 *
-//                 * For CM10, a non-removable storage (partition or FUSE)
-//                 * will always be primary. But we have older recoveries out there 
-//                 * in which /sdcard is the microSD, and the internal partition is 
-//                 * mounted at /emmc.
-//                 *
-//                 * At buildtime, we try to automagically guess from recovery.fstab
-//                 * what's the recovery configuration for this device. If "/emmc"
-//                 * exists, and the primary isn't removable, we assume it will be 
-//                 * mounted there.
-//                 */ 
-//                if (!v.isRemovable() && alternateIsInternal) {
-//                    return "/emmc";
-//                }
-//            };
-//        }
+        StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume[] volumes = sm.getVolumeList();
+        String primaryStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        boolean alternateIsInternal = getResources().getBoolean(R.bool.alternateIsInternal);
+
+        if (volumes.length <= 1) {
+            // single storage, assume only /sdcard exists
+            return "/sdcard";
+        }
+
+        for (int i = 0; i < volumes.length; i++) {
+            StorageVolume v = volumes[i];
+            if (v.getPath().equals(primaryStoragePath)) {
+                /* This is the primary storage, where we stored the update file
+                 *
+                 * For CM10, a non-removable storage (partition or FUSE)
+                 * will always be primary. But we have older recoveries out there 
+                 * in which /sdcard is the microSD, and the internal partition is 
+                 * mounted at /emmc.
+                 *
+                 * At buildtime, we try to automagically guess from recovery.fstab
+                 * what's the recovery configuration for this device. If "/emmc"
+                 * exists, and the primary isn't removable, we assume it will be 
+                 * mounted there.
+                 */ 
+                if (!v.isRemovable() && alternateIsInternal) {
+                    return "/emmc";
+                }
+            };
+        }
         // Not found, assume non-alternate
         return "/sdcard";
     }
