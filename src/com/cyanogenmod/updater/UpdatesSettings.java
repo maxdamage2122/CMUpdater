@@ -82,6 +82,7 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
     private static final int MENU_REFRESH = 0;
     private static final int MENU_DELETE_ALL = 1;
     private static final int MENU_SYSTEM_INFO = 2;
+    private static final int MENU_ABOUT = 3;
 
     private SharedPreferences mPrefs;
     private CheckBoxPreference mBackupRom;
@@ -196,6 +197,9 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
         menu.add(0, MENU_SYSTEM_INFO, 0, R.string.menu_system_info)
             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
+        menu.add(0, MENU_ABOUT, 0, R.string.menu_about)
+            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
         return true;
     }
 
@@ -212,6 +216,10 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
 
             case MENU_SYSTEM_INFO:
                 showSysInfo();
+                return true;
+
+            case MENU_ABOUT:
+                showAbout();
                 return true;
 
             case android.R.id.home:
@@ -784,6 +792,22 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.menu_system_info);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.dialog_ok, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        ((TextView)dialog.findViewById(android.R.id.message)).setTextAppearance(this,
+                android.R.style.TextAppearance_DeviceDefault_Small);
+    }
+    
+    private void showAbout() {
+        // Build the message
+        String message = "CM Updater for TWRP recoveries\n"+
+        		"Modified by maxdamage2122\n"+
+        		"Version "+getString(R.string.app_version);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.menu_about);
         builder.setMessage(message);
         builder.setPositiveButton(R.string.dialog_ok, null);
         AlertDialog dialog = builder.create();
