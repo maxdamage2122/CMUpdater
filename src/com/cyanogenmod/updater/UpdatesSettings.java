@@ -9,6 +9,7 @@
 
 package com.cyanogenmod.updater;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -69,6 +70,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -790,6 +792,19 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
         dialog.show();
         ((TextView)dialog.findViewById(android.R.id.message)).setTextAppearance(this,
                 android.R.style.TextAppearance_DeviceDefault_Small);
+    }
+    
+    @SuppressLint("DefaultLocale")
+	private String currentDateTime() {
+    	Calendar cal = Calendar.getInstance(); 
+    	
+    	// YYYYMMDD-HHMM
+    	String dateTime = String.format("%04d%02d%02d-%02d%02d",
+    			cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)+1,cal.get(Calendar.DAY_OF_MONTH),
+    			cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
+    	//String dateTime = String.format("%02d",cal.get(Calendar.MONTH));
+    	
+    	return dateTime;
     }
 
     protected void startUpdate(final UpdateInfo updateInfo) {
