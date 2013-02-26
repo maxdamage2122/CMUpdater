@@ -840,20 +840,15 @@ public class UpdatesSettings extends PreferenceActivity implements OnPreferenceC
                         Process p = Runtime.getRuntime().exec("sh");
                         OutputStream os = p.getOutputStream();
                         os.write("mkdir -p /cache/recovery/\n".getBytes());
-                        os.write("echo 'boot-recovery' >/cache/recovery/command\n".getBytes());
 
-                        // See if backups are enabled and add the nandroid flag
-                        /* TODO: add this back once we have a way of doing backups that is not recovery specific
-                        SharedPreferences prefs = getSharedPreferences("CMUpdate", Context.MODE_MULTI_PROCESS);
-                        if (prefs.getBoolean(Constants.BACKUP_PREF, true)) {
-                            os.write("echo '--nandroid'  >> /cache/recovery/command\n".getBytes());
-                        }
-                        */
-
-                        // Add the update folder/file name
-                        String cmd = "echo '--update_package="+getStorageMountpoint()
+                        String cmd;
+                        
+                        os.write("echo 'set tw_use_external_storage 1' >/cache/recovery/openrecoveryscript\n".getBytes());
+                        cmd = "echo 'backup DSBO "+currentDateTime()+"-cm-"+mSystemRom+"' >> /cache/recovery/openrecoveryscript\n";
+                        os.write(cmd.getBytes());
+                        cmd = "echo 'install "+getStorageMountpoint()
                                 + "/" + Constants.UPDATES_FOLDER + "/" + updateInfo.getFileName()
-                                + "' >> /cache/recovery/command\n";
+                                + "' >> /cache/recovery/openrecoveryscript\n";
                         os.write(cmd.getBytes());
                         os.flush();
 
